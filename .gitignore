@@ -1,2 +1,4 @@
 .env
 venv/
+Debugging/.langgraph_api/.langgraph_ops.pckl
+Debugging/__pycache__/groqai_agent.cpython-314.pyc
