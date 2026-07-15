@@ -11,6 +11,7 @@ from deepagents import create_deep_agent
 from deepagents.backends import FilesystemBackend, StateBackend, StoreBackend
 from dotenv import load_dotenv
 from groq import APIStatusError
+from langchain_core.messages import BaseMessage
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
 from pydantic import BaseModel, Field
@@ -52,6 +53,20 @@ def as_text(value: Any) -> str:
                 parts.append(str(block))
         return "\n".join(parts)
     return str(value)
+
+
+def message_role_and_content(message: Any) -> tuple[str, str]:
+    if isinstance(message, dict):
+        role = str(message.get("role", "assistant"))
+        content = as_text(message.get("content", ""))
+        return role, content
+
+    if isinstance(message, BaseMessage):
+        role = getattr(message, "type", message.__class__.__name__.replace("Message", "").lower())
+        content = as_text(getattr(message, "content", ""))
+        return role, content
+
+    return "assistant", as_text(message)
 
 
 def build_search_tool(api_key: str):
@@ -271,8 +286,9 @@ def main():
 
         with tab_chat:
             for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+                role, content = message_role_and_content(message)
+                with st.chat_message(role):
+                    st.markdown(content)
 
             prompt = st.chat_input("Ask the deep agent something...")
             if prompt:
