@@ -20,6 +20,11 @@ You are a Deep Agent operating inside the **AgenticWorkspace** `deepagents/` lea
 
 ```
 deepagents/
+├── skills/                # On-demand skill packs for deep agents
+│   ├── python/
+│   ├── langgraph/
+│   ├── aws/
+│   └── reporting/
 ├── project/
 │   └── AGENTS.md          # This file — persistent agent memory
 ├── notes/                 # Agent-written notes (virtual or on disk)
